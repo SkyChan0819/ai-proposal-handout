@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 輔助會議提案撰寫｜互動講義</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EEEDEA;--card:#FFFFFF;--tint:#DCE5E8;--ink:#3A4347;--muted:#6E8089;--slate:#557A8A;--slateD:#3E5F6D;--pale:#A8C0C9;--line:#C9D5DA;--acc:#B0583E;--accBg:#F3E3DC;--ok:#3F7A5A;--okBg:#E1EEE6}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 'Noto Sans TC','Microsoft JhengHei',sans-serif}
+h1,h2,h3{font-family:'Noto Serif TC','Noto Serif CJK TC',serif;font-weight:600;color:var(--slate);line-height:1.3;margin:0}
+h1{font-size:clamp(30px,5vw,44px)}h2{font-size:clamp(24px,3.4vw,30px);margin-bottom:6px}h3{font-size:20px;color:var(--slateD)}
+p{margin:.4em 0}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px}
+header{padding:44px 0 26px;border-bottom:1px solid var(--line)}
+.kicker{color:var(--muted);font-size:15px}
+.sub{font-size:19px;color:var(--slateD);margin-top:8px}
+nav{position:sticky;top:0;z-index:5;background:rgba(238,237,234,.96);backdrop-filter:blur(4px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:4px;overflow-x:auto;padding:8px 20px}
+nav a{flex:none;text-decoration:none;color:var(--slateD);font-size:15px;padding:6px 12px;border-radius:999px}
+nav a:hover,nav a.on{background:var(--tint)}
+section{padding:40px 0;border-bottom:1px solid var(--line)}
+.lead{color:var(--muted);margin-bottom:18px}
+.grid{display:grid;gap:14px}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:760px){.g3,.g2{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--card);border-radius:14px;padding:18px 20px}
+.tint{background:var(--tint)}
+.big{font-family:'Noto Serif TC',serif;font-size:40px;color:var(--slate);line-height:1}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;font-size:16px}
+th{background:var(--slate);color:#fff;font-weight:500;text-align:left;padding:10px 14px}
+td{padding:10px 14px;border-top:1px solid #E3E9EC;vertical-align:top}
+.scroll{overflow-x:auto}
+button,.btn{font:inherit;font-size:15px;border:0;border-radius:10px;padding:9px 16px;cursor:pointer;background:var(--slate);color:#fff;min-height:40px}
+button.ghost{background:transparent;color:var(--slateD);border:1px solid var(--pale)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--pale);outline-offset:2px}
+input[type=text],textarea{font:inherit;font-size:16px;width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:#fff;color:var(--ink)}
+textarea{min-height:84px;resize:vertical}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted);font-size:15px}
+.tag{display:inline-block;font-size:13px;padding:1px 8px;border-radius:999px;background:var(--tint);color:var(--slateD);margin-left:6px;vertical-align:2px}
+/* proposal example */
+.prop{display:grid;gap:8px}
+.pf{display:grid;grid-template-columns:80px minmax(0,1fr);gap:12px;padding:12px 14px;border-radius:10px;cursor:pointer;border:2px solid transparent;background:#fff}
+.pf b{font-weight:500;color:var(--slateD)}
+.pf.sel{border-color:var(--slate);background:#F4F8F9}
+.explain{margin-top:12px;min-height:84px}
+/* quiz */
+.q{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;background:#fff;border-radius:10px;padding:10px 14px}
+.q .opts{display:flex;gap:6px}
+.q .fb{grid-column:1/-1;font-size:15px;display:none}
+.q.right{background:var(--okBg)}.q.wrong{background:var(--accBg)}
+.q.right .fb,.q.wrong .fb{display:block}
+/* steps */
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.steps button{background:#fff;color:var(--slateD);border:1px solid var(--line)}
+.steps button.on{background:var(--slate);color:#fff;border-color:var(--slate)}
+.prompt{white-space:pre-wrap;background:#F6F5F3;border:1px solid var(--line);border-radius:10px;padding:14px;font-size:15.5px;line-height:1.75}
+.prompt mark{background:#FFF3C4;color:inherit;padding:0 2px;border-radius:3px}
+.fill{display:grid;gap:8px;margin:12px 0}
+/* bug hunt */
+.ai{background:#fff;border-radius:14px;padding:6px}
+.line{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:10px;align-items:start;padding:12px;border-radius:10px;cursor:pointer}
+.line:hover{background:#F6F5F3}
+.line .lab{color:var(--muted);font-size:15px}
+.line .flag{font-size:14px;color:var(--slateD);background:#fff;border:1px solid var(--pale);border-radius:999px;padding:4px 14px;white-space:nowrap;min-height:36px}
+.line.marked{background:var(--accBg)}.line.marked .flag{color:#fff;background:var(--acc);border-color:var(--acc)}
+.ans{display:none;margin-top:6px;font-size:15.5px;color:var(--ink);grid-column:2/-1}
+.reveal .ans{display:block}
+.reveal .line.bad .lab{color:var(--acc);font-weight:500}
+.score{font-size:15px;color:var(--slateD)}
+/* checklist */
+.chk{display:flex;gap:10px;align-items:flex-start;background:#fff;border-radius:10px;padding:10px 14px;cursor:pointer}
+.chk input{width:20px;height:20px;margin-top:4px;accent-color:var(--slate);flex:none}
+.bar{height:8px;background:var(--tint);border-radius:99px;overflow:hidden;margin:10px 0}
+.bar i{display:block;height:100%;background:var(--slate);width:0;transition:width .3s}
+.sentence{background:#fff;border-radius:12px;padding:14px 16px;font-family:'Noto Serif TC',serif;font-size:19px;line-height:1.8}
+.sentence span{border-bottom:2px solid var(--pale);padding:0 2px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--slateD);color:#fff;padding:10px 18px;border-radius:10px;font-size:15px;opacity:0;transition:opacity .25s;pointer-events:none}
+.toast.on{opacity:1}
+#pdfSheet{position:fixed;left:-10000px;top:0;width:794px;background:#fff;color:#222;font:15px/1.7 'Noto Sans TC','Microsoft JhengHei',sans-serif;padding:56px 60px}
+#pdfSheet h1{font-size:26px;color:#3E5F6D;margin:0 0 4px}#pdfSheet .k{color:#6E8089;font-size:13px}#pdfSheet table{border-radius:0;font-size:15px;margin-top:14px}#pdfSheet th{width:120px;background:#EEF3F5;color:#3E5F6D;vertical-align:top;border:1px solid #C9D5DA}#pdfSheet td{border:1px solid #C9D5DA;white-space:pre-wrap}#pdfSheet h2{font-size:20px;margin-top:26px}
+footer{padding:30px 0 50px;color:var(--muted);font-size:14px}
+@media(max-width:600px){.line{grid-template-columns:minmax(0,1fr) auto}.line .lab{grid-column:1}.line .flag{grid-column:2;grid-row:1}.line>div:nth-child(2){grid-column:1/-1}.ans{grid-column:1/-1}.pf{grid-template-columns:52px minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar i{transition:none}}
+@media print{nav,button,.toast{display:none!important}body{background:#fff}section{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="kicker">北台八縣市高中學生自治培力｜議事程序與會議技巧｜第二單元</div>
+  <h1>AI 輔助會議提案撰寫</h1>
+  <div class="sub">讓 AI 當助手，不當代筆</div>
+</div></header>
+<nav><div class="wrap" id="nav">
+  <a href="#s1">提案結構</a><a href="#s2">信達雅</a><a href="#s3">AI 能與不能</a><a href="#s4">五步驟</a><a href="#s5">替 AI 抓錯</a><a href="#s6">提案了，然後呢</a><a href="#s7">提案工作單</a><a href="#s8">提案單</a>
+</div></nav>
+<main class="wrap">
+
+<section id="s1">
+  <h2>一、提案的基本結構</h2>
+  <p class="lead">提案就是書面的動議（《會議規範》第 34 條）。點選範例提案的每一段，看看它要讓讀者知道什麼。</p>
+  <div class="grid g2">
+    <div class="prop" id="prop">
+      <div class="pf" data-k="0"><b>案由</b><div>建請學校自下學期起，於每月第一個週三實施便服日案。</div></div>
+      <div class="pf" data-k="1"><b>說明</b><div>一、本校目前每學期僅於校慶當日開放便服。<br>二、學生會於○月進行線上問卷，回收○○○份，其中○○%支持增加便服日。</div></div>
+      <div class="pf" data-k="2"><b>辦法</b><div>一、自下學期起，每月第一個週三實施便服日。<br>二、由學生會擬定服裝原則，送學務處核定後公告。<br>三、實施一學期後，由學生會進行問卷檢討，並於學生議會報告。</div></div>
+      <div class="muted">範例為示範用，數字請依實際調查填寫。</div>
+    </div>
+    <div class="card tint explain" id="propExplain"><h3>點選範例中的任一段</h3><p class="muted">每個欄位都要讓讀者讀完知道一件事。</p></div>
+  </div>
+  <p class="muted" style="margin-top:14px">提醒：各校提案單的格式與提案期限不同（例如臺南一中規定議案至遲應於開會前三日提出），撰寫前請先確認本校規定。</p>
+</section>
+
+<section id="s2">
+  <h2>二、提案的信、達、雅</h2>
+  <p class="lead">「信、達、雅」原是嚴復提出的翻譯標準，也很適合用來檢查一份提案。</p>
+  <div class="grid g3">
+    <div class="card"><div class="big">信</div><h3 style="margin-top:10px">內容真實、有依據</h3><p>數據、調查、規定都要有出處；不誇大、不編造；AI 寫出來的內容一定要查證。</p><p class="muted">常見問題：「大家都想要」「根據調查」，卻沒有說明出處。</p></div>
+    <div class="card"><div class="big">達</div><h3 style="margin-top:10px">讀者看得懂</h3><p>案由一句話說完；說明分點，先講現況再講問題；辦法寫明誰來做、做什麼、何時做、怎麼檢討；一份提案只處理一件事。</p><p class="muted">常見問題：「適度開放」「再行研議」，讀完不知道要做什麼。</p></div>
+    <div class="card"><div class="big">雅</div><h3 style="margin-top:10px">用語得體</h3><p>使用正式書面語；語氣尊重，不刻意挑起對立；就事論事。</p><p class="muted">常見問題：「學校一直打壓學生」等情緒性字眼。</p></div>
+  </div>
+</section>
+
+<section id="s3">
+  <h2>三、AI 能做與不能做</h2>
+  <p class="lead">下面八件事，哪些適合請 AI 協助？選完會立刻看到說明。</p>
+  <div class="grid" id="quiz"></div>
+  <div class="row" style="margin-top:12px"><span class="score" id="quizScore"></span><button class="ghost" id="quizReset">重新作答</button></div>
+  <div class="card tint" style="margin-top:18px">
+    <h3>AI 寫的，你簽名。</h3>
+    <p>生成式 AI 會寫出語氣肯定、但內容錯誤的文字（一般稱為「幻覺」），最常出現在數字、出處與法規條號。提案人要為提案裡的每一句話負責。</p>
+    <p class="muted">使用前請留意：學校或組織對使用 AI 的規範，以及各 AI 服務對未成年使用者的年齡與家長同意規定。</p>
+  </div>
+</section>
+
+<section id="s4">
+  <h2>四、五步驟：用 AI 協助寫提案</h2>
+  <p class="lead">點選步驟查看做法。範本可以先在欄位填入內容，再一鍵複製。</p>
+  <div class="steps" id="stepBtns"></div>
+  <div class="card" id="stepBody"></div>
+</section>
+
+<section id="s5">
+  <h2>五、課堂練習：替 AI 抓錯</h2>
+  <p class="lead">下面是一份 AI 寫的提案（示範用，內容含刻意安排的錯誤）。按右側「標記」圈出你覺得有問題的段落，寫下修改方向後再對答案。</p>
+  <div class="ai" id="bug"></div>
+  <div class="row" style="margin-top:12px">
+    <button id="bugCheck">對答案</button><button class="ghost" id="bugReset">重新作答</button><span class="score" id="bugScore"></span>
+  </div>
+</section>
+
+<section id="s6">
+  <h2>六、提案了，然後呢？</h2>
+  <p class="lead">提案只是開始，不是結束。寫好提案之後，還有三件事要做。</p>
+  <div class="grid g3">
+    <div class="card"><div class="big" style="font-size:30px">會前</div><h3 style="margin-top:8px">溝通</h3><p>與相關單位溝通，讓對方有準備；事先不溝通，會議上容易讓對方措手不及，反而難以展開實質的對話。</p></div>
+    <div class="card"><div class="big" style="font-size:30px">會中</div><h3 style="margin-top:8px">說明與回應</h3><p>站起來說明提案，並回應別人的質疑。（第三單元）</p></div>
+    <div class="card"><div class="big" style="font-size:30px">會後</div><h3 style="margin-top:8px">追蹤與回報</h3><p>追蹤決議的執行，並向你代表的同學回報。</p></div>
+  </div>
+</section>
+
+<section id="s7">
+  <h2>七、我的提案工作單</h2>
+  <p class="lead">回校後先用「想法收斂表」整理想法，再用「提案前檢核表」確認準備是否完整。內容只存在這台裝置的瀏覽器裡。</p>
+  <h3>A. 想法收斂表</h3>
+  <p class="muted" style="margin-top:10px">① 倒出來：把想到的、聽到的、手上的資料全部寫下來，不用整理</p>
+  <textarea id="w_dump" data-save placeholder="例：同學常說制服很悶熱；聽說鄰近學校有便服日（待查）；學生會上學期做過問卷……"></textarea>
+  <p class="muted" style="margin-top:16px">② 分類：把上面的內容放進對應的格子</p>
+  <div class="scroll"><table>
+    <tr><th style="width:26%">項目</th><th>我的整理</th><th style="width:28%">出處／還缺什麼資料</th></tr>
+    <tr><td><b>問題</b><br><span class="muted">現在發生了什麼事、影響了誰</span></td><td><textarea data-save id="w_p1"></textarea></td><td><textarea data-save id="w_p2"></textarea></td></tr>
+    <tr><td><b>希望的改變</b><br><span class="muted">想達成什麼、做到了怎麼看得出來</span></td><td><textarea data-save id="w_c1"></textarea></td><td><textarea data-save id="w_c2"></textarea></td></tr>
+    <tr><td><b>依據</b><br><span class="muted">事實、數據、規定</span></td><td><textarea data-save id="w_e1"></textarea></td><td><textarea data-save id="w_e2"></textarea></td></tr>
+    <tr><td><b>這次先不提的想法</b><br><span class="muted">留到下次或另外處理</span></td><td><textarea data-save id="w_l1"></textarea></td><td><textarea data-save id="w_l2"></textarea></td></tr>
+  </table></div>
+  <p class="muted" style="margin-top:16px">③ 收斂成一句話</p>
+  <div class="grid g2">
+    <div class="fill">
+      <label>誰<input type="text" data-save id="s_who" placeholder="例：學務處"></label>
+      <label>何時<input type="text" data-save id="s_when" placeholder="例：下學期起"></label>
+      <label>做什麼<input type="text" data-save id="s_what" placeholder="例：每月第一個週三試辦便服日"></label>
+      <label>最重要的理由<input type="text" data-save id="s_why" placeholder="例：同學有舒適與表達自我的需求"></label>
+    </div>
+    <div class="sentence" id="sentence"></div>
+  </div>
+
+  <h3 style="margin-top:28px">B. 提案前檢核表</h3>
+  <div class="bar"><i id="chkBar"></i></div>
+  <div class="grid" id="chk"></div>
+  <p class="score" id="chkMsg" style="margin-top:10px"></p>
+
+  <h3 style="margin-top:28px">可能的質疑與我的回應</h3>
+  <p class="muted">可以直接使用步驟 4「請 AI 唱反調」的結果，再改成自己的話。</p>
+  <div class="scroll"><table id="qa">
+    <tr><th style="width:24%">誰可能提出質疑</th><th>質疑內容</th><th>我的回應</th></tr>
+  </table></div>
+  <div class="row" style="margin-top:12px">
+    <button class="ghost" id="qaAdd">新增一列</button>
+    <button id="export">複製整份工作單</button>
+    <button class="ghost" id="clearAll">清除全部內容</button>
+  </div>
+</section>
+
+<section id="s8">
+  <h2>八、提案單</h2>
+  <p class="lead">依案由、說明、辦法寫好提案，按「下載提案單 PDF」存成檔案，再依講者或桌長的指示傳送。內容只存在這台裝置的瀏覽器裡，下載前可以隨時修改。</p>
+  <div class="grid g2">
+    <label class="muted">提案單位（桌次）<input type="text" data-save id="p_unit" placeholder="例：第 3 桌"></label>
+    <label class="muted">提案人（學校）<input type="text" data-save id="p_by" placeholder="例：王小明（○○高中）"></label>
+  </div>
+  <label class="muted" style="display:block;margin-top:10px">連署人<input type="text" data-save id="p_co" placeholder="例：林○○、陳○○、張○○"></label>
+  <label class="muted" style="display:block;margin-top:14px">案由　<span class="muted">一句話說完要決定的事，以「案」結尾</span><input type="text" data-save id="p_title" placeholder="例：建請學校自下學期起，於每月第一個週三試辦便服日案。"></label>
+  <label class="muted" style="display:block;margin-top:14px">說明　<span class="muted">分點寫，先講現況再講問題；每個數字與規定都要有出處，查不到的標示【待補】</span><textarea data-save id="p_desc" style="min-height:130px" placeholder="一、&#10;二、"></textarea></label>
+  <label class="muted" style="display:block;margin-top:14px">辦法　<span class="muted">寫成可以直接表決的肯定句，包含實施時間、負責單位與檢討方式</span><textarea data-save id="p_way" style="min-height:110px" placeholder="一、&#10;二、"></textarea></label>
+  <label class="muted" style="display:block;margin-top:14px">預想質疑與回應（選填）<textarea data-save id="p_qa" placeholder="例：學務主任：校外人士不易辨識？→ 當天全體配戴學生證。"></textarea></label>
+  <label class="muted" style="display:block;margin-top:14px">發言分工（選填）<textarea data-save id="p_role" placeholder="例：○○○說明提案；○○○回應安全疑慮。"></textarea></label>
+  <div class="card tint" style="margin-top:16px" id="pCheck"></div>
+  <div class="row" style="margin-top:14px">
+    <button id="pdfBtn">下載提案單 PDF</button>
+    <label class="row muted" style="gap:6px;cursor:pointer"><input type="checkbox" id="pdfWithWs" style="width:18px;height:18px;accent-color:var(--slate)">一併附上第七節的提案工作單</label>
+  </div>
+  <p class="muted" id="pdfMsg" style="margin-top:8px"></p>
+</section>
+</main>
+<footer><div class="wrap">北台八縣市高中學生自治培力｜議事程序與會議技巧｜第二單元：AI 輔助會議提案撰寫｜詹凱昕｜2026.11.21<br>本部分所稱條次，除另有註明外，皆指內政部《會議規範》。各校議事規則另有規定者，依本校規定。</div></footer>
+<div class="toast" id="toast"></div>
+<div id="pdfSheet" aria-hidden="true"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+{
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const toast = (m) => { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 1800); };
+const store = { get(k, d) { try { const v = localStorage.getItem('u2_' + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem('u2_' + k, JSON.stringify(v)); } catch (e) {} } };
+async function copy(text) {
+  try { await navigator.clipboard.writeText(text); toast('已複製'); }
+  catch (e) { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); toast('已複製'); } catch (e2) { toast('無法自動複製，請手動選取'); } ta.remove(); }
+}
+
+// 1. proposal fields
+const PF = [
+  { h: '案由｜這次要大家決定的事', k: '讀者讀完會知道：這次要表決的是哪一件事，以及提案的方向。', w: '用一句話寫成，通常以「……案」結尾。' },
+  { h: '說明｜現況、問題與依據', k: '讀者讀完會知道：為什麼這件事需要處理——現在發生了什麼、影響了誰、證據從哪裡來。', w: '分點寫出；調查結果、數據、校規條文都要註明出處。' },
+  { h: '辦法（或稱建議）｜通過後具體要做的事', k: '讀者讀完會知道：通過後由誰來做、做什麼、什麼時候做、怎麼檢討。', w: '用肯定句寫成，讓這段文字可以直接拿來表決。' },
+];
+$$('.pf').forEach((el) => el.addEventListener('click', () => {
+  $$('.pf').forEach((x) => x.classList.toggle('sel', x === el));
+  const d = PF[+el.dataset.k];
+  $('#propExplain').innerHTML = `<h3>${d.h}</h3><p>${d.k}</p><p class="muted">寫作要點：${d.w}</p>`;
+}));
+
+// 3. quiz
+const QZ = [
+  ['把零散的想法整理成問題、希望的改變與依據', 1, '收斂想法是 AI 的第一項工作，接著才是依格式撰寫。'],
+  ['決定要不要提案、支持什麼立場', 0, '立場由你和你代表的同學決定，不能外包給 AI。'],
+  ['把整理好的想法寫成「案由、說明、辦法」', 1, '依格式撰寫是 AI 擅長的事，但寫完一定要人工查證。'],
+  ['提供提案需要的數據與法規條號', 0, 'AI 可能編造看似真實的數字、調查與法規條號，數據要自己找、自己查。'],
+  ['扮演反對者，預想別人可能提出的質疑', 1, '請 AI 唱反調，可以先準備好開會時的回應。'],
+  ['確認本校的章程與提案期限', 0, 'AI 不知道你們學校的規定，要自己查學校或學生會公告。'],
+  ['檢查辦法是否具體、有沒有遺漏', 1, '可以請 AI 依信、達、雅檢查，但只列問題，不要讓它改寫全文。'],
+  ['整理含有同學姓名與聯絡方式的會議紀錄', 0, '不要把同學的姓名、聯絡方式或個案細節貼給 AI；先刪除個人資料。'],
+];
+function drawQuiz() {
+  const ans = store.get('quiz', {});
+  $('#quiz').innerHTML = QZ.map((q, i) => {
+    const a = ans[i]; const st = a === undefined ? '' : (a === q[1] ? 'right' : 'wrong');
+    return `<div class="q ${st}" data-i="${i}"><div>${q[0]}</div><div class="opts"><button class="${a === 1 ? '' : 'ghost'}" data-v="1">適合</button><button class="${a === 0 ? '' : 'ghost'}" data-v="0">不適合</button></div><div class="fb">${st === 'right' ? '答對了。' : st === 'wrong' ? '再想想。' : ''}${q[2]}</div></div>`;
+  }).join('');
+  const n = Object.keys(ans).length, c = Object.entries(ans).filter(([i, v]) => QZ[i][1] === v).length;
+  $('#quizScore').textContent = n ? `已作答 ${n} / ${QZ.length} 題，答對 ${c} 題` : '';
+}
+$('#quiz').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  const i = b.closest('.q').dataset.i, ans = store.get('quiz', {}); ans[i] = +b.dataset.v; store.set('quiz', ans); drawQuiz();
+});
+$('#quizReset').addEventListener('click', () => { store.set('quiz', {}); drawQuiz(); });
+drawQuiz();
+
+// 4. steps
+const TPL = [
+  { t: '範本一：收斂想法', fields: [['我的想法', '把步驟 1 寫下的內容貼在這裡']], body: '以下是我對一個議題的零散想法，可能有重複或跳躍。請幫我整理成三點：\n1. 問題：現在發生了什麼事、影響了誰。\n2. 希望的改變：我想要達成什麼。\n3. 依據：我手上有哪些事實或資料。\n要求：只能使用我寫的內容，不要自行補充；資料不足的地方請標示【待補】，並列出我還需要找哪些資料。如果我的想法包含不只一個議題，請分開列出，並建議哪一個適合先提。\n我的想法：{0}' },
+  { t: '範本二：依格式成稿', fields: [['資料', '貼上範本一整理後的內容']], body: '你是高中學生議會的提案撰寫助手。請根據以下資料寫一份提案，分為「案由」「說明」「辦法」三部分。\n要求：\n1. 案由用一句話寫成，以「案」結尾。\n2. 說明只能使用我提供的資料，不要自行補充數據、調查或法規；需要補資料的地方請標示【待補】。\n3. 辦法寫成可以直接表決的肯定句，包含實施時間、負責單位與檢討方式。\n4. 使用正式書面語。\n資料：{0}', note: '重點：「只能使用我提供的資料，缺的標示【待補】」是防止 AI 編造內容最有效的一句話。' },
+  { t: '範本三：唱反調', fields: [['擔心的問題', '例：管理、校園安全'], ['對象', '例：學務處老師']], body: '請扮演兩位角色：一位反對這份提案的學生議員，以及一位擔心{0}問題的{1}。\n請各列出三個他們最可能提出的質疑，並為每個質疑建議一句回應方式。' },
+  { t: '範本四：自我檢查', fields: [['提案全文', '貼上提案全文']], body: '請依「信、達、雅」檢查以下提案：1. 信：說明中是否有缺乏出處的數字或主張，請逐條列出；2. 達：案由是否清楚說明要決定的事，辦法是否寫明誰來做、何時做、怎麼檢討；3. 雅：用語是否正式、得體。只列出問題與修改建議，不要改寫全文。\n提案：{0}' },
+];
+const STEPS = [
+  { n: '自己先想', d: '把想法、聽到的意見、手上的資料全部寫下來，不用整理；並先和同伴討論、找好連署人。', extra: '<p class="muted">可以直接使用第七節的「想法收斂表 ① 倒出來」。</p>' },
+  { n: '請 AI 收斂想法', d: '請 AI 整理出問題、希望的改變與依據，並指出還缺哪些資料。', tpl: 0 },
+  { n: '請 AI 依格式成稿', d: '把收斂後的內容和格式要求一起交給 AI。', tpl: 1 },
+  { n: '請 AI 唱反調', d: '請 AI 扮演反對者，列出最可能的質疑。這份清單也是開會時準備回應的素材。', tpl: 2 },
+  { n: '人工查證與修改', d: '核對數字、校規與可行性，補上 AI 不知道的資訊。可用範本四輔助檢查。', tpl: 3, verify: true },
+];
+const VER = ['每個數字都能對應到問卷或文件。', '引用的校規與條號確實存在。', '【待補】都已補齊。', '辦法寫明誰來做、何時做、怎麼檢討。', '讀起來像我們自己會說的話。'];
+let cur = 0;
+function promptText(ti, html) {
+  const T = TPL[ti], vals = store.get('tpl' + ti, []);
+  return T.body.replace(/\{(\d)\}/g, (m, i) => { const v = (vals[i] || '').trim(); return html ? `<mark>${esc(v || '＿＿＿＿')}</mark>` : (v || '＿＿＿＿'); });
+}
+function drawStep() {
+  $('#stepBtns').innerHTML = STEPS.map((s, i) => `<button class="${i === cur ? 'on' : ''}" data-i="${i}">${i + 1}. ${s.n}</button>`).join('');
+  const s = STEPS[cur];
+  let h = `<h3>步驟 ${cur + 1}：${s.n}</h3><p>${s.d}</p>${s.extra || ''}`;
+  if (s.tpl !== undefined) {
+    const T = TPL[s.tpl], vals = store.get('tpl' + s.tpl, []);
+    h += `<h3 style="margin-top:16px;font-size:18px">${T.t}</h3><div class="fill">${T.fields.map((f, i) => `<label class="muted">${f[0]}${T.fields.length === 1 && f[0] !== '擔心的問題' ? `<textarea data-t="${s.tpl}" data-f="${i}" placeholder="${f[1]}">${esc(vals[i] || '')}</textarea>` : `<input type="text" data-t="${s.tpl}" data-f="${i}" placeholder="${f[1]}" value="${esc(vals[i] || '')}">`}</label>`).join('')}</div>`;
+    h += `<div class="prompt" id="promptOut">${promptText(s.tpl, true)}</div><div class="row" style="margin-top:10px"><button id="copyPrompt">複製提示詞</button><span class="muted">黃底是你填入的內容</span></div>`;
+    if (T.note) h += `<p class="muted" style="margin-top:10px">${T.note}</p>`;
+  }
+  if (s.verify) {
+    const v = store.get('verify', []);
+    h += `<h3 style="margin-top:20px;font-size:18px">人工查證清單</h3><div class="grid" style="margin-top:8px">${VER.map((t, i) => `<label class="chk"><input type="checkbox" data-v="${i}" ${v[i] ? 'checked' : ''}><span>${t}</span></label>`).join('')}</div><p class="score" id="verMsg" style="margin-top:8px"></p>`;
+  }
+  h += `<div class="row" style="margin-top:16px">${cur > 0 ? '<button class="ghost" id="prevStep">上一步</button>' : ''}${cur < 4 ? '<button class="ghost" id="nextStep">下一步</button>' : ''}</div>`;
+  $('#stepBody').innerHTML = h;
+  verMsg();
+}
+function verMsg() { const m = $('#verMsg'); if (!m) return; const v = store.get('verify', []), n = VER.filter((_, i) => v[i]).length; m.textContent = n === VER.length ? '全部完成，可以送出提案。' : `已完成 ${n} / ${VER.length} 項；任何一項未勾，都要回頭修改再送出。`; }
+$('#stepBtns').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { cur = +b.dataset.i; drawStep(); } });
+$('#stepBody').addEventListener('click', (e) => {
+  if (e.target.id === 'prevStep') { cur--; drawStep(); }
+  else if (e.target.id === 'nextStep') { cur++; drawStep(); }
+  else if (e.target.id === 'copyPrompt') copy(promptText(STEPS[cur].tpl, false));
+});
+$('#stepBody').addEventListener('input', (e) => {
+  const t = e.target;
+  if (t.dataset.t !== undefined) { const k = 'tpl' + t.dataset.t, v = store.get(k, []); v[+t.dataset.f] = t.value; store.set(k, v); $('#promptOut').innerHTML = promptText(+t.dataset.t, true); }
+});
+$('#stepBody').addEventListener('change', (e) => {
+  const t = e.target; if (t.dataset.v !== undefined) { const v = store.get('verify', []); v[+t.dataset.v] = t.checked; store.set('verify', v); verMsg(); }
+});
+drawStep();
+
+// 5. bug hunt
+const BUG = [
+  { lab: '案由', txt: '便服日實施案', bad: false, a: '案由太籠統，最好寫出具體內容（例如何時起、多久一次）；本題以說明與辦法的四個問題為主。' },
+  { lab: '說明一', txt: '根據教育部 2024 年全國調查，高達 87% 的高中生認為便服日能提升學習動機。', bad: true, tag: '信', a: '數據沒有出處，很可能是 AI 編造。改用自己查得到的資料，例如本校問卷，並註明調查時間、對象與人數。' },
+  { lab: '說明二', txt: '依《高級中等學校學生自治條例》第 12 條規定，學生會有權決定服裝規定。', bad: true, tag: '信', a: '法規名稱與條次查無實據，且「學生會有權決定服裝規定」誇大學生會權限。到全國法規資料庫或學校網站查證；改寫為學生代表依規定參與服儀規定的討論。' },
+  { lab: '說明三', txt: '實施便服日可以讓同學更快樂，也能展現本校開放的校風。', bad: true, tag: '雅', a: '主觀而空泛，「更快樂」「開放校風」沒有證據，語氣帶立場。改寫為具體的現況與影響，例如同學反映的意見與件數。' },
+  { lab: '辦法', txt: '建議學校適度開放便服日，詳細方式再行研議。', bad: true, tag: '達', a: '不夠具體，「適度開放」「再行研議」沒有寫明誰、何時、怎麼做，無法表決。例：「自下學期起，每月第一個週三實施便服日，由學務處公告實施方式，期末檢討。」' },
+];
+function drawBug(reveal) {
+  const m = store.get('bugMark', []), notes = store.get('bugNote', []);
+  $('#bug').classList.toggle('reveal', !!reveal);
+  $('#bug').innerHTML = BUG.map((b, i) => `<div class="line ${m[i] ? 'marked' : ''} ${b.bad ? 'bad' : ''}" data-i="${i}"><div class="lab">${b.lab}</div><div>${b.txt}<div style="margin-top:8px" onclick="event.stopPropagation()"><input type="text" data-n="${i}" placeholder="我的修改方向（選填）" value="${esc(notes[i] || '')}"></div><div class="ans">${b.bad ? `<b style="color:var(--acc);font-weight:500">有問題</b><span class="tag">${b.tag}</span>　` : '<b style="font-weight:500">補充</b>　'}${b.a}</div></div><button class="flag" type="button" aria-pressed="${!!m[i]}">${m[i] ? '已標記' : '標記'}</button></div>`).join('');
+  if (reveal) {
+    const hit = BUG.filter((b, i) => b.bad && m[i]).length, miss = BUG.filter((b, i) => !b.bad && m[i]).length;
+    $('#bugScore').textContent = `四個問題中找到 ${hit} 個${miss ? '；案由也值得改得更具體' : ''}。對完答案後，試著把四個問題對應到信、達、雅。`;
+  } else $('#bugScore').textContent = '';
+}
+let revealed = false;
+$('#bug').addEventListener('click', (e) => { const l = e.target.closest('.line'); if (!l) return; const m = store.get('bugMark', []); m[+l.dataset.i] = !m[+l.dataset.i]; store.set('bugMark', m); drawBug(revealed); });
+$('#bug').addEventListener('input', (e) => { const t = e.target; if (t.dataset.n !== undefined) { const n = store.get('bugNote', []); n[+t.dataset.n] = t.value; store.set('bugNote', n); } });
+$('#bugCheck').addEventListener('click', () => { revealed = true; drawBug(true); });
+$('#bugReset').addEventListener('click', () => { revealed = false; store.set('bugMark', []); store.set('bugNote', []); drawBug(false); });
+drawBug(false);
+
+// 7. worksheet
+$$('[data-save]').forEach((el) => { el.value = store.get('w_' + el.id, ''); el.addEventListener('input', () => { store.set('w_' + el.id, el.value); sentence(); }); });
+function sentence() {
+  const g = (id, ph) => esc($('#' + id).value.trim() || ph);
+  $('#sentence').innerHTML = `我希望<span>${g('s_who', '＿＿（誰）')}</span>在<span>${g('s_when', '＿＿（何時）')}</span><span>${g('s_what', '＿＿＿＿（做什麼）')}</span>，因為<span>${g('s_why', '＿＿＿＿（最重要的理由）')}</span>。`;
+}
+sentence();
+const CHK = [
+  ['自己先想', '問題說得出來：現況是什麼、影響了誰。'], ['自己先想', '希望的改變具體：做得到，也看得出有沒有做到。'], ['自己先想', '依據都有出處，【待補】的資料已補齊。'], ['自己先想', '已和同伴討論，找好連署人。'], ['自己先想', '已確認本校提案單格式、提案期限與連署人數。'],
+  ['信', '每個數字與規定都查得到出處。'], ['達', '案由一句話說完；辦法寫明誰來做、做什麼、何時做、怎麼檢討。'], ['雅', '用語正式、語氣尊重，沒有刻意挑起對立的字眼。'], ['查證', '已完成「人工查證清單」。'],
+];
+function drawChk() {
+  const v = store.get('chk', []);
+  $('#chk').innerHTML = CHK.map((c, i) => `<label class="chk"><input type="checkbox" data-c="${i}" ${v[i] ? 'checked' : ''}><span><span class="tag" style="margin:0 8px 0 0">${c[0]}</span>${c[1]}</span></label>`).join('');
+  const n = CHK.filter((_, i) => v[i]).length;
+  $('#chkBar').style.width = (n / CHK.length * 100) + '%';
+  $('#chkMsg').textContent = n === CHK.length ? '全部打勾，可以送出提案了。' : `已完成 ${n} / ${CHK.length} 項，全部打勾才送出提案。`;
+}
+$('#chk').addEventListener('change', (e) => { const t = e.target; if (t.dataset.c !== undefined) { const v = store.get('chk', []); v[+t.dataset.c] = t.checked; store.set('chk', v); drawChk(); } });
+drawChk();
+function drawQA() {
+  const rows = store.get('qa', [['', '', ''], ['', '', ''], ['', '', '']]);
+  $$('#qa tr.r').forEach((r) => r.remove());
+  rows.forEach((r, i) => { const tr = document.createElement('tr'); tr.className = 'r'; tr.innerHTML = r.map((c, j) => `<td><textarea data-q="${i}" data-j="${j}" style="min-height:60px" placeholder="${i === 0 ? ['例：學務主任', '例：校外人士不易辨識', '例：當天配戴學生證'][j] : ''}">${esc(c)}</textarea></td>`).join(''); $('#qa').appendChild(tr); });
+}
+$('#qa').addEventListener('input', (e) => { const t = e.target; if (t.dataset.q !== undefined) { const rows = store.get('qa', [['', '', ''], ['', '', ''], ['', '', '']]); rows[+t.dataset.q][+t.dataset.j] = t.value; store.set('qa', rows); } });
+$('#qaAdd').addEventListener('click', () => { const rows = store.get('qa', [['', '', ''], ['', '', ''], ['', '', '']]); rows.push(['', '', '']); store.set('qa', rows); drawQA(); });
+drawQA();
+$('#export').addEventListener('click', () => {
+  const v = (id) => $('#' + id).value.trim() || '（未填）';
+  const chk = store.get('chk', []), qa = store.get('qa', []);
+  const txt = ['【我的提案工作單】', '', 'A. 想法收斂表', '① 倒出來：' + v('w_dump'), '② 分類',
+    '問題：' + v('w_p1') + '｜出處／缺：' + v('w_p2'), '希望的改變：' + v('w_c1') + '｜出處／缺：' + v('w_c2'),
+    '依據：' + v('w_e1') + '｜出處／缺：' + v('w_e2'), '這次先不提：' + v('w_l1') + '｜備註：' + v('w_l2'),
+    '③ 一句話：' + $('#sentence').textContent, '', 'B. 提案前檢核表',
+    ...CHK.map((c, i) => (chk[i] ? '■ ' : '□ ') + c[1]), '', '可能的質疑與我的回應',
+    ...qa.filter((r) => r.some((c) => c.trim())).map((r) => `${r[0] || '（誰）'}：${r[1] || '（質疑）'} → ${r[2] || '（回應）'}`)].join('\n');
+  copy(txt);
+});
+const confirmBox = { armed: false };
+$('#clearAll').addEventListener('click', (e) => {
+  if (!confirmBox.armed) { confirmBox.armed = true; e.target.textContent = '再按一次確認清除'; setTimeout(() => { confirmBox.armed = false; e.target.textContent = '清除全部內容'; }, 3000); return; }
+  try { Object.keys(localStorage).filter((k) => k.startsWith('u2_')).forEach((k) => localStorage.removeItem(k)); } catch (err) {}
+  $$('[data-save]').forEach((el) => (el.value = '')); sentence(); drawChk(); drawQA(); drawQuiz(); revealed = false; drawBug(false); drawStep(); pCheck();
+  confirmBox.armed = false; e.target.textContent = '清除全部內容'; toast('已清除');
+});
+
+
+// 8. proposal + PDF
+function pCheck() {
+  const t = $('#p_title').value.trim(), d = $('#p_desc').value, w = $('#p_way').value;
+  const items = [
+    [t.length > 0 && /案[。．.]?$/.test(t), '案由以「案」結尾'],
+    [!/(適度|再行研議|研議)/.test(w) && w.trim().length > 0, '辦法沒有「適度」「再行研議」等模糊字眼'],
+    [!/【待補】/.test(d + w), '【待補】都已補齊'],
+    [$('#p_unit').value.trim() && $('#p_by').value.trim(), '已填提案單位與提案人'],
+  ];
+  $('#pCheck').innerHTML = '<h3 style="font-size:17px">送出前自動檢查</h3>' + items.map(([ok, s]) => `<div style="color:${ok ? 'var(--ok)' : 'var(--acc)'}">${ok ? '✓' : '・'} ${s}</div>`).join('') + '<p class="muted" style="margin-top:6px">自動檢查只看格式，內容是否真實、可行，仍要自己用信、達、雅確認。</p>';
+}
+['p_title', 'p_desc', 'p_way', 'p_unit', 'p_by'].forEach((id) => $('#' + id).addEventListener('input', pCheck));
+pCheck();
+function sheetHTML(withWs) {
+  const v = (id) => esc($('#' + id).value.trim()) || '<span style="color:#999">（未填）</span>';
+  const now = new Date(), ds = `${now.getFullYear()}.${now.getMonth() + 1}.${now.getDate()}`;
+  let s = `<div class="k">北台八縣市高中學生自治培力｜模擬校務會議</div><h1>提案單</h1><div class="k">填寫日期：${ds}</div>
+  <table><tr><th>提案單位</th><td>${v('p_unit')}</td></tr><tr><th>提案人</th><td>${v('p_by')}</td></tr><tr><th>連署人</th><td>${v('p_co')}</td></tr>
+  <tr><th>案由</th><td>${v('p_title')}</td></tr><tr><th>說明</th><td>${v('p_desc')}</td></tr><tr><th>辦法</th><td>${v('p_way')}</td></tr>
+  <tr><th>預想質疑與回應</th><td>${v('p_qa')}</td></tr><tr><th>發言分工</th><td>${v('p_role')}</td></tr></table>`;
+  const parts = [s];
+  if (withWs) {
+    s = '';
+    const chk = store.get('chk', []), qa = store.get('qa', []);
+    s += `<div class="k">北台八縣市高中學生自治培力｜模擬校務會議</div><h1>附件：提案工作單</h1><table><tr><th>倒出來</th><td>${v('w_dump')}</td></tr><tr><th>問題</th><td>${v('w_p1')}<br><span class="k">出處／缺：</span>${v('w_p2')}</td></tr>
+    <tr><th>希望的改變</th><td>${v('w_c1')}<br><span class="k">出處／缺：</span>${v('w_c2')}</td></tr><tr><th>依據</th><td>${v('w_e1')}<br><span class="k">出處／缺：</span>${v('w_e2')}</td></tr>
+    <tr><th>這次先不提</th><td>${v('w_l1')}</td></tr><tr><th>一句話</th><td>${esc($('#sentence').textContent)}</td></tr>
+    <tr><th>提案前檢核</th><td>${CHK.map((c, i) => (chk[i] ? '■ ' : '□ ') + esc(c[1])).join('<br>')}</td></tr>
+    <tr><th>質疑與回應</th><td>${qa.filter((r) => r.some((c) => c.trim())).map((r) => esc(`${r[0] || '（誰）'}：${r[1] || '（質疑）'} → ${r[2] || '（回應）'}`)).join('<br>') || '<span style="color:#999">（未填）</span>'}</td></tr></table>`;
+    parts.push(s);
+  }
+  return parts;
+}
+$('#pdfBtn').addEventListener('click', async () => {
+  const btn = $('#pdfBtn'), msg = $('#pdfMsg');
+  if (!$('#p_title').value.trim()) { msg.textContent = '請先填寫案由。'; $('#p_title').focus(); return; }
+  const sheet = $('#pdfSheet'); const parts = sheetHTML($('#pdfWithWs').checked);
+  const name = `提案單_${($('#p_unit').value.trim() || '未填桌次').replace(/[\\/:*?"<>|\s]/g, '')}.pdf`;
+  if (!window.html2canvas || !window.jspdf) { msg.textContent = '目前無法載入 PDF 元件（可能沒有網路），已改用列印：請在列印視窗選「另存為 PDF」。'; printFallback(parts.join('<div style="page-break-before:always"></div>')); return; }
+  btn.disabled = true; btn.textContent = '產生中…'; msg.textContent = '';
+  try {
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    const { jsPDF } = window.jspdf; const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
+    const pw = 210, ph = 297; let p = 0;
+    for (const part of parts) {
+    sheet.innerHTML = part;
+    const canvas = await html2canvas(sheet, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+    const pagePx = Math.floor(canvas.width * ph / pw);
+    for (let y = 0; y < canvas.height; y += pagePx, p++) {
+      const part = document.createElement('canvas'); part.width = canvas.width; part.height = Math.min(pagePx, canvas.height - y);
+      part.getContext('2d').drawImage(canvas, 0, y, canvas.width, part.height, 0, 0, canvas.width, part.height);
+      if (p) pdf.addPage();
+      pdf.addImage(part.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, pw, part.height * pw / canvas.width);
+    }
+    }
+    pdf.save(name);
+    msg.textContent = `已下載「${name}」。請依講者或桌長的指示傳送這個檔案。`;
+  } catch (err) { msg.textContent = 'PDF 產生失敗，已改用列印：請在列印視窗選「另存為 PDF」。'; printFallback(parts.join('<div style="page-break-before:always"></div>')); }
+  btn.disabled = false; btn.textContent = '下載提案單 PDF';
+});
+function printFallback(inner) {
+  const w = window.open('', '_blank'); if (!w) { toast('瀏覽器擋住了新視窗'); return; }
+  w.document.write(`<!DOCTYPE html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><title>提案單</title><style>body{font:15px/1.7 'Noto Sans TC','Microsoft JhengHei',sans-serif;margin:20mm;color:#222}h1{font-size:24px;color:#3E5F6D;margin:0}h2{font-size:19px;margin-top:22px}.k{color:#6E8089;font-size:13px}table{width:100%;border-collapse:collapse;margin-top:12px}th{width:110px;background:#EEF3F5;text-align:left;vertical-align:top;padding:8px;border:1px solid #C9D5DA}td{padding:8px;border:1px solid #C9D5DA;white-space:pre-wrap}</style></head><body>${inner}<script>onload=()=>print()<\/script></body></html>`);
+  w.document.close();
+}
+
+// nav highlight
+const secs = $$('main section'); const links = $$('#nav a');
+const io = new IntersectionObserver((es) => { es.forEach((en) => { if (en.isIntersecting) links.forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id)); }); }, { rootMargin: '-40% 0px -55% 0px' });
+secs.forEach((s) => io.observe(s));
+}
+</script>
+</body>
+</html>
